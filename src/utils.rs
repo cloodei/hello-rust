@@ -18,9 +18,9 @@ pub fn max<T: PartialOrd>(a: T, b: T) -> T {
 
 #[inline]
 pub fn swap<T: Copy>(a: &mut T, b: &mut T) {
-    let temp = *a;
+    let t = *a;
     *a = *b;
-    *b = temp;
+    *b = t;
 }
 
 pub fn is_sorted<T: PartialOrd>(arr: &[T]) -> bool {
