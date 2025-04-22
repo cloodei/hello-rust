@@ -32,3 +32,29 @@ pub fn is_sorted<T: PartialOrd>(arr: &[T]) -> bool {
 
     true
 }
+
+pub fn is_sorted_strict<T: Ord + Copy>(prev: &[T], latter: &[T]) -> bool {
+    let len = prev.len();
+    if len != latter.len() {
+        return false;
+    }
+    if len == 0 {
+        return true;
+    }
+
+    
+    let mut tmp = Vec::with_capacity(len);
+    unsafe {
+        tmp.set_len(len);
+    }
+    tmp.copy_from_slice(prev);
+    tmp.sort_unstable();
+
+    for i in 0..len {
+        if tmp[i] != latter[i] {
+            return false;
+        }
+    }
+
+    true
+}

@@ -5,3 +5,17 @@ edition = "2021"
 
 [dependencies]
 rand = "0.9.0"
+
+[profile.dev]
+opt-level = 1
+overflow-checks = false
+
+[profile.release]
+opt-level = 3
+overflow-checks = false
+lto = true
+debug = false
+panic = "abort"
+codegen-units = 1
+incremental = false
+strip = "symbols"

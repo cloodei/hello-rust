@@ -1,6 +1,7 @@
-use crate::utils::{min, swap};
+use crate::utils::min;
 
 const RUN: usize = 24;
+
 
 /// Sort the entire `arr` in-place with InsertionSort, using a custom comparator.
 /// 
@@ -60,7 +61,7 @@ fn internal<T: Copy>(arr: &mut [T], left: usize, right: usize, cmp: fn(&T, &T) -
     let mut j = right;
 
     loop {
-        i -= 1;
+        i += 1;
         j -= 1;
         while cmp(&arr[i], &pivot) {
             i += 1;
@@ -118,8 +119,10 @@ pub fn merge_sort<T: Copy + PartialOrd>(arr: &mut [T]) {
         return;
     }
 
-    for i in (0..n).step_by(RUN) {
+    let mut i = 0;
+    while i < n {
         insertion_sort(arr, i, min(i + RUN - 1, n - 1));
+        i += RUN;
     }
 
     let mut in_buffer = false;
@@ -127,16 +130,19 @@ pub fn merge_sort<T: Copy + PartialOrd>(arr: &mut [T]) {
     unsafe {
         buffer.set_len(n);
     };
+
+    println!("Buffer array: {:p}", buffer.as_slice());
+    println!("Array: {:p}", arr);
     
     let mut src = arr;
     let mut dst = buffer.as_mut_slice();
 
     let mut width = RUN;
     while width < n {
-        let mut i = 0;
+        i = 0;
         while i < n {
-            let mid = min(i + width - 1, n - 1);
-            let right = min(mid + width - 1, n - 1);
+            let mid = min(i + width, n);
+            let right = min(mid + width, n);
 
             let mut l = i;
             let mut r = mid;
@@ -146,7 +152,8 @@ pub fn merge_sort<T: Copy + PartialOrd>(arr: &mut [T]) {
                 if src[l] < src[r] {
                     dst[curr] = src[l];
                     l += 1;
-                } else {
+                }
+                else {
                     dst[curr] = src[r];
                     r += 1;
                 }
@@ -173,6 +180,10 @@ pub fn merge_sort<T: Copy + PartialOrd>(arr: &mut [T]) {
         in_buffer = !in_buffer;
         width <<= 1;
     }
+
+    println!("Dst: {:p} | {}", dst, dst.len());
+    println!("Src: {:p} | {}", src, src.len());
+    println!("In buffer: {}", in_buffer);
 
     if in_buffer {
         dst.copy_from_slice(src);
@@ -203,8 +214,8 @@ pub fn merge_sort_spec<T: Copy>(arr: &mut [T], cmp: fn(&T, &T) -> bool) {
     while width < n {
         let mut i = 0;
         while i < n {
-            let mid = min(i + width - 1, n - 1);
-            let right = min(mid + width - 1, n - 1);
+            let mid = min(i + width, n);
+            let right = min(mid + width, n);
 
             let mut l = i;
             let mut r = mid;
@@ -214,7 +225,8 @@ pub fn merge_sort_spec<T: Copy>(arr: &mut [T], cmp: fn(&T, &T) -> bool) {
                 if cmp(&src[l], &src[r]) {
                     dst[curr] = src[l];
                     l += 1;
-                } else {
+                }
+                else {
                     dst[curr] = src[r];
                     r += 1;
                 }
