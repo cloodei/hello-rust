@@ -29,7 +29,7 @@ pub fn insertion_sort<T: Copy + PartialOrd>(arr: &mut [T], left: usize, right: u
         let k = arr[i];
         let mut j = i;
 
-        while j > left && arr[j - 1] < k {
+        while j > left && arr[j - 1] > k {
             arr[j] = arr[j - 1];
             j -= 1;
         }
@@ -130,9 +130,6 @@ pub fn merge_sort<T: Copy + PartialOrd>(arr: &mut [T]) {
     unsafe {
         buffer.set_len(n);
     };
-
-    println!("Buffer array: {:p}", buffer.as_slice());
-    println!("Array: {:p}", arr);
     
     let mut src = arr;
     let mut dst = buffer.as_mut_slice();
@@ -180,10 +177,6 @@ pub fn merge_sort<T: Copy + PartialOrd>(arr: &mut [T]) {
         in_buffer = !in_buffer;
         width <<= 1;
     }
-
-    println!("Dst: {:p} | {}", dst, dst.len());
-    println!("Src: {:p} | {}", src, src.len());
-    println!("In buffer: {}", in_buffer);
 
     if in_buffer {
         dst.copy_from_slice(src);

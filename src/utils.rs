@@ -33,7 +33,7 @@ pub fn is_sorted<T: PartialOrd>(arr: &[T]) -> bool {
     true
 }
 
-pub fn is_sorted_strict<T: Ord + Copy>(prev: &[T], latter: &[T]) -> bool {
+pub fn is_sorted_strict<T: PartialOrd + Copy>(prev: &[T], latter: &[T]) -> bool {
     let len = prev.len();
     if len != latter.len() {
         return false;
@@ -48,7 +48,7 @@ pub fn is_sorted_strict<T: Ord + Copy>(prev: &[T], latter: &[T]) -> bool {
         tmp.set_len(len);
     }
     tmp.copy_from_slice(prev);
-    tmp.sort_unstable();
+    tmp.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
     for i in 0..len {
         if tmp[i] != latter[i] {
