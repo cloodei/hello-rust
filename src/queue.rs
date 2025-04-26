@@ -9,13 +9,13 @@ pub struct Queue<T> {
     pub size: usize
 }
 
-impl<T: Copy> Default for Queue<T> {
+impl<T: Clone> Default for Queue<T> {
     fn default() -> Self {
         Queue::new()
     }
 }
 
-impl<T: Copy> Queue<T> {
+impl<T: Clone> Queue<T> {
     /// Creates a new empty queue.
     pub fn new() -> Self {
         Queue {
@@ -38,19 +38,16 @@ impl<T: Copy> Queue<T> {
 
     /// Creates a new queue from an existing vector.
     pub fn from_vec(vec: Vec<T>) -> Self {
-        let mut queue = Queue::with_capacity(vec.len());
-        queue.items.copy_from_slice(&vec);
-        queue.size = vec.len();
-        queue.back = vec.len();
-        queue.front = 0;
-
-        queue
+        Queue::from_slice(&vec)
     }
 
     /// Creates a new queue from an existing slice.
     pub fn from_slice(slice: &[T]) -> Self {
         let mut queue = Queue::with_capacity(slice.len());
-        queue.items.copy_from_slice(slice);
+        unsafe {
+            queue.items.set_len(slice.len());
+        }
+        queue.items.clone_from_slice(slice);
         queue.size = slice.len();
         queue.back = slice.len();
         queue.front = 0;
@@ -69,7 +66,7 @@ impl<T: Copy> Queue<T> {
             self.resize();
         }
         
-        self.items[self.back] = value;
+        self.items[self.back] = value.clone();
         self.back = (self.back + 1) % self.capacity();
         self.size += 1;
     }
@@ -81,7 +78,7 @@ impl<T: Copy> Queue<T> {
         }
 
         self.front = (self.front + self.capacity() - 1) % self.capacity();
-        self.items[self.front] = value;
+        self.items[self.front] = value.clone();
         self.size += 1;
     }
 
@@ -92,7 +89,7 @@ impl<T: Copy> Queue<T> {
             return None;
         }
 
-        let value = self.items[self.front];
+        let value = self.items[self.front].clone();
         self.front = (self.front + 1) % self.capacity();
         self.size -= 1;
 
@@ -102,7 +99,7 @@ impl<T: Copy> Queue<T> {
     /// Removes and returns the element from the front of the queue without checking for underflow.
     /// This is unsafe because it can cause undefined behavior if the queue is empty.
     pub fn pop_front_unchecked(&mut self) -> T {
-        let value = self.items[self.front];
+        let value = self.items[self.front].clone();
         self.front = (self.front + 1) % self.capacity();
         self.size -= 1;
 
@@ -117,7 +114,7 @@ impl<T: Copy> Queue<T> {
         }
 
         self.back = (self.back + self.capacity() - 1) % self.capacity();
-        let value = self.items[self.back];
+        let value = self.items[self.back].clone();
         self.size -= 1;
         
         Some(value)
@@ -127,7 +124,7 @@ impl<T: Copy> Queue<T> {
     /// This is unsafe because it can cause undefined behavior if the queue is empty.
     pub fn pop_back_unchecked(&mut self) -> T {
         self.back = (self.back + self.capacity() - 1) % self.capacity();
-        let value = self.items[self.back];
+        let value = self.items[self.back].clone();
         self.size -= 1;
 
         value
@@ -141,7 +138,7 @@ impl<T: Copy> Queue<T> {
         }
 
         for i in 0..self.size {
-            new_items[i] = self.items[(self.front + i) % self.capacity()];
+            new_items[i] = self.items[(self.front + i) % self.capacity()].clone();
         }
 
         self.front = 0;
@@ -153,22 +150,24 @@ impl<T: Copy> Queue<T> {
         if self.size == 0 {
             return None;
         }
-        Some(self.items[self.front])
+
+        Some(self.items[self.front].clone())
     }
 
     pub fn front_unchecked(&self) -> T {
-        self.items[self.front]
+        self.items[self.front].clone()
     }
 
     pub fn back(&self) -> Option<T> {
         if self.size == 0 {
             return None;
         }
-        Some(self.items[(self.back + self.capacity() - 1) % self.capacity()])
+
+        Some(self.items[(self.back + self.capacity() - 1) % self.capacity()].clone())
     }
 
     pub fn back_unchecked(&self) -> T {
-        self.items[(self.back + self.capacity() - 1) % self.capacity()]
+        self.items[(self.back + self.capacity() - 1) % self.capacity()].clone()
     }
 
     pub fn is_empty(&self) -> bool {
