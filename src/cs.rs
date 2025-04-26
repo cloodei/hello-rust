@@ -2,6 +2,7 @@
 
 use std::{io::{Read, Write}, net::{TcpListener, TcpStream}, sync::{Arc, Mutex}, thread};
 
+
 pub fn server() {
     let x = TcpListener::bind("0.0.0.0:8080").unwrap();
     let mutx = Arc::new(Mutex::new([0; 1024]));
