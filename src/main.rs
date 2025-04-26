@@ -1,7 +1,8 @@
-pub mod sorts;
 pub mod utils;
-pub mod run_sorts;
+pub mod run;
+pub mod queue;
+pub mod cli;
 
 fn main() {
-    run_sorts::run::run();
+    run::main();
 }

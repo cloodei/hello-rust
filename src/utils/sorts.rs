@@ -1,4 +1,4 @@
-use crate::utils::min;
+use super::utils::min;
 
 const RUN: usize = 24;
 

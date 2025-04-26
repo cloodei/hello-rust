@@ -1,15 +1,14 @@
 use std::time;
 use rand::random_range;
 
-use crate::sorts;
-use crate::utils;
+use crate::utils::{sorts, utils};
 
 const SIZE: usize = 1_000_000;
 
-pub(crate) fn run() {
+pub fn main() -> i128 {
     let mut arr = Vec::with_capacity(SIZE);
     for _ in 0..SIZE {
-        arr.push(random_range(-524_288..1_048_576));
+        arr.push(random_range(-524_288i64..1_048_576));
     }
 
     let mut arr2 = arr.clone();
@@ -35,4 +34,6 @@ pub(crate) fn run() {
     sorts::merge_sort(arr2.as_mut_slice());
     elapsed = start.elapsed();
     println!("merge_sort() time: {:.2?} ms | {}", elapsed.as_micros() as f64 / 1000.0, utils::is_sorted_strict(arr.as_slice(), arr2.as_slice()));
+
+    1
 }

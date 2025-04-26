@@ -2,7 +2,8 @@
 pub fn min<T: PartialOrd>(a: T, b: T) -> T {
     if a < b {
         a
-    } else {
+    }
+    else {
         b
     }
 }
@@ -11,7 +12,8 @@ pub fn min<T: PartialOrd>(a: T, b: T) -> T {
 pub fn max<T: PartialOrd>(a: T, b: T) -> T {
     if a > b {
         a
-    } else {
+    }
+    else {
         b
     }
 }
@@ -41,7 +43,6 @@ pub fn is_sorted_strict<T: PartialOrd + Copy>(prev: &[T], latter: &[T]) -> bool 
     if len == 0 {
         return true;
     }
-
     
     let mut tmp = Vec::with_capacity(len);
     unsafe {
