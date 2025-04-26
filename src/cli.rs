@@ -1,7 +1,14 @@
-use std::{collections::VecDeque, env};
-
+use std::env;
+use crate::{run, cs};
 
 pub fn main() {
-    let args: VecDeque<String> = env::args().collect();
-    println!("{args:?}");
+    let args: Vec<String> = env::args().collect();
+    let command = args[1].as_str();
+    
+    match command {
+        "go"     => _ = run::main(),
+        "server" => cs::server(),
+        "client" => cs::client(),
+        _        => println!("Unknown command: {}", command),
+    };
 }
